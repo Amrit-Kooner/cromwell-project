@@ -13,15 +13,10 @@ async function testEndpoint(data, expect){
 describe("login", () => {
   const loggedUserData = {username:"loggedusername",email:"loggedemail@gmail.com",password:"loggedpassword1@",confirmPassword:"loggedpassword1@"};
   const randomUserData = createLoginData("randomusername", "randompassword1@");
-  const inputNotEntered = undefined;
+  const inputNotEntered = "";
 
   beforeAll(async () => {
     await supertest(app).post("/user/register").send(loggedUserData);
-  });
-
-  afterAll(async () => {
-    await pool.query('DELETE FROM users WHERE username = $1', [loggedUserData.username]);
-    await pool.end();
   });
 
   it("successful login", async () => {
@@ -50,11 +45,14 @@ describe("login", () => {
   });
 
   it("password not entered", async() => {
-    const data = createLoginData(inputNotEntered, loggedUserData.password);
+    const data = createLoginData(loggedUserData.username, inputNotEntered);
     await testEndpoint(data, 400)
+  });
+
+  afterAll(async () => {
+    await pool.query('DELETE FROM users WHERE username = $1', [loggedUserData.username]);
+    await pool.end();
   });
 });
 
 
-//username not enetred
-//password not entered

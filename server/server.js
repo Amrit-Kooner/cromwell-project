@@ -84,8 +84,62 @@ async function hashPassword(password, salt){
 }
 
 
+
+// used by /user endpoint
+function decodeToken(req, res){
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(!authHeader || !token) {
+        sendResponse(res, 401, "Token missing.");
+        return;
+    }
+
+    try{
+        const decoded = jwt.verify(token, secretTokenKey);
+
+        if(!decoded){
+            sendResponse(res, 401, "Token verification failed.");
+            return false;
+        }
+
+        return decoded;
+    } catch(err){
+        console.error(err)
+        sendResponse(res, 401, "Token verification failed.");
+        return false
+    }
+}
+
+// used by /user endpoint
+async function sendUserData(userID, res){
+    const response = await queryDatabase("SELECT * FROM users WHERE id = $1", [userID]);
+
+    if(!response) {
+        sendResponse(res, 500, "Database query failed");
+        return;
+    }
+
+    const userData = response.rows[0];
+
+    sendResponse(res, 200, userData);
+}
+
+function isEmailValid(email, res) {
+    const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const isEmailValid = emailRegexPattern.test(email);
+
+    if(!email || !isEmailValid){
+        sendResponse(res, 400, "Invalid email.");
+        return false;
+    }
+
+    return true;
+}
+
 function isPasswordValid(password, confirmPassword, res) {
-    confirmPassword = confirmPassword ? password : confirmPassword;
+    confirmPassword = confirmPassword ?? password;
 
     const MIN_PASSWORD_LEN = 10;
     const specialCharRegexPattern = /[^a-zA-Z0-9]/;
@@ -112,19 +166,6 @@ function isPasswordValid(password, confirmPassword, res) {
     }else if (!hasNumber) {
         sendResponse(res, 400, "Password needs at least one number.");
          return false;
-    }
-
-    return true;
-}
-
-function isEmailValid(email, res) {
-    const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const isEmailValid = emailRegexPattern.test(email);
-
-    if(!email || !isEmailValid){
-        sendResponse(res, 400, "Invalid email.");
-        return false;
     }
 
     return true;
@@ -219,49 +260,6 @@ async function loginUser(username, res){
 }
 
 
-// used by /user endpoint
-function decodeToken(req, res){
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if(!authHeader || !token) {
-        sendResponse(res, 401, "Token missing.");
-        return;
-    }
-
-    try{
-        const decoded = jwt.verify(token, secretTokenKey);
-
-        if(!decoded){
-            sendResponse(res, 401, "Token verification failed.");
-            return false;
-        }
-
-        return decoded;
-    } catch(err){
-        console.error(err)
-        sendResponse(res, 401, "Token verification failed.");
-        return false
-    }
-}
-
-// used by /user endpoint
-async function sendUserData(userID, res){
-    const response = await queryDatabase("SELECT * FROM users WHERE id = $1", [userID]);
-
-    if(!response) {
-        sendResponse(res, 500, "Database query failed");
-        return;
-    }
-
-    const userData = response.rows[0];
-
-    sendResponse(res, 200, userData);
-}
-
-
-
-
 // -------------------------------------------------------------------------
 
 // #
@@ -284,24 +282,6 @@ app.post("/user/register", async (req, res) => {
     await registerUser(username, email, hashedPassword, res);
 });
 
-
-// #
-app.post("/user/login", async (req, res) => {
-    const {username, password} = req.body;
-
-    if(!isUsernameValid(username, res) || !isPasswordValid(password, res)) return;
-
-    const doesUserNameExists = await loginCheckUsernameExists(username, res);
-
-    if(!doesUserNameExists) return;
-
-    const doesPasswordMatch = await loginCheckPasswordMatch(username, password, res);
-
-    if(!doesPasswordMatch) return;
-    
-
-    await loginUser(username, res);
-})
 
 
 // #
@@ -330,4 +310,43 @@ app.listen(PORT_NUM, () => {
     console.log(`Server has started on port ${PORT_NUM}`)
 })
 
+
+// ---------------------
+
+// #
+app.post("/user/login", async (req, res) => {
+    const {username, password} = req.body;
+
+    if(!isUsernameValid(username, res) || !isPasswordValid(password, undefined, res)) return;
+
+    const doesUserNameExists = await loginCheckUsernameExists(username, res);
+
+    if(!doesUserNameExists) return;
+
+    const doesPasswordMatch = await loginCheckPasswordMatch(username, password, res);
+
+    if(!doesPasswordMatch) return;
+    
+
+    await loginUser(username, res);
+})
+
 module.exports = app;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
