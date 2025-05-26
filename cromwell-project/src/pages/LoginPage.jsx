@@ -1,99 +1,92 @@
-import axios from 'axios'
-import { useEffect } from 'react';
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button'
-import Input from '../components/Input'
-import ButtonLink from '../components/ButtonLink';
-import verifyTokenHook from '../hooks/VerifyTokenHook';
+import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import ButtonLink from "../components/ButtonLink";
+import verifyTokenHook from "../hooks/VerifyTokenHook";
 
+import { resetDetails, setErrorMsg, updateDetails } from "../redux/slices/authUserSlice";
 
-function LoginPage({handleUpdateDetails, resetDetails, isUsernameValid, jwtKey}){
-    const navigate = useNavigate();
+function LoginPage({ isUsernameValid, jwtKey }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const defaultDetailsState = {username:"", 
-                                 password:""}
+  const loginDetails = useSelector((state) => state.authUser.loginDetails);
+  const errorMsg = useSelector((state) => state.authUser.errorMsg);
 
-    const [loginDetails, setLoginDetails] = useState({...defaultDetailsState})
-    const [errorMsg, setErrorMsg] = useState("");
+  async function validateLogin(event) {
+    event.preventDefault();
 
-    
-    // custom hook?
-    // useEffect(() => {
-    //     if(localStorage.getItem(jwtKey)) {
-    //         navigate("/home");
-    //     }
-    // }, []);
-    
-
-    async function validateLogin(event){
-        event.preventDefault();
-
-        if(!isUsernameValid(loginDetails.username, setErrorMsg)){
-            resetDetails(["username"], setLoginDetails);
-            return -1;            
-        }
-
-        try{
-            const response = await axios.post("http://localhost:5000/user/login", loginDetails);
-            const status = response.status;
-            const payloadData = response.data;
-
-            const STATUS_SUCCESS_MIN = 200;
-            const STATUS_SUCCESS_MAX = 299;
-
-            if(status === 404){
-                resetDetails(["username"], setLoginDetails);
-                setErrorMsg();
-                return -1;
-            }
-
-            if(status === 400){
-                resetDetails(["password"], setLoginDetails);
-                setErrorMsg();
-                return -1;
-            }
-            
-            if(status >= STATUS_SUCCESS_MIN && status <= STATUS_SUCCESS_MAX){
-                localStorage.setItem(jwtKey, JSON.stringify(payloadData));
-                // console.log(payloadData)
-
-                setLoginDetails({...defaultDetailsState});
-                setErrorMsg("");
-
-                navigate('/home');
-            }
-            
-        }catch(err){
-            console.error(err);
-        }
+    if (!isUsernameValid(loginDetails.username, (msg) => dispatch(setErrorMsg(msg)))) {
+      dispatch(resetDetails(["username"]));
+      return -1;
     }
 
-    return (
-        <>
-             <ButtonLink destination={"/"}>Back</ButtonLink>
+    try {
+      const response = await axios.post("http://localhost:5000/user/login", loginDetails);
+      const status = response.status;
+      const payloadData = response.data;
 
-            <form onSubmit={validateLogin}>  
-                <Input type='text' 
-                       placeholder='username...' 
-                       maxLength={30}
-                       onChange={(event) => handleUpdateDetails("username", event, setLoginDetails)}>
-                </Input>
+      if (status === 404) {
+        dispatch(resetDetails(["username"]));
+        dispatch(setErrorMsg("User not found."));
+        return -1;
+      }
 
-                <Input type='password' 
-                       placeholder='password...'
-                       onChange={(event) => handleUpdateDetails("password", event, setLoginDetails)}>
-                </Input>
+      if (status === 400) {
+        dispatch(resetDetails(["password"]));
+        dispatch(setErrorMsg("Incorrect password."));
+        return -1;
+      }
 
-                <Button type='submit'>Login</Button>
-            </form>
+      if (status >= 200 && status <= 299) {
+        localStorage.setItem(jwtKey, JSON.stringify(payloadData));
+        dispatch(resetDetails(["username", "password"]));
+        dispatch(setErrorMsg(""));
+        navigate("/home");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
-            <h1>{loginDetails.email}</h1>
-            <h1>{loginDetails.password}</h1>
+  function handleChange(key, event) {
+    dispatch(updateDetails({ key, value: event.target.value.trim() }));
+  }
 
-            <h3>Don't have an account? <ButtonLink destination={"/register"}>Register</ButtonLink></h3>
-        </>
-    )
+  return (
+    <>
+      <ButtonLink destination={"/"}>Back</ButtonLink>
+
+      <form onSubmit={validateLogin}>
+        <Input
+          type="text"
+          placeholder="username..."
+          maxLength={30}
+          onChange={(e) => handleChange("username", e)}
+          value={loginDetails.username}
+        />
+
+        <Input
+          type="password"
+          placeholder="password..."
+          onChange={(e) => handleChange("password", e)}
+          value={loginDetails.password}
+        />
+
+        <Button type="submit">Login</Button>
+      </form>
+
+      {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
+
+      <h3>
+        Don't have an account? <ButtonLink destination={"/register"}>Register</ButtonLink>
+      </h3>
+    </>
+  );
 }
 
 export default LoginPage;
+

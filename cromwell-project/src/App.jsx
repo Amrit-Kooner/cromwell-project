@@ -8,28 +8,27 @@ import ProfilePage from './pages/ProfilePage'
 import ErrorPage from './pages/ErrorPage.jsx'
 import MainLayout from './components/MainLayout.jsx'
 
-// utils folder?
 
 // #
 function App({}) {
   const jwtKey = "jsonwebtoken";
 
-  // #
-    function handleUpdateDetails(key, event, setDetails) {
-      const value = event.target.value.trim();
-      setDetails(prev => ({ ...prev, [key]: value }));
-    }
+  // // #
+  //   function handleUpdateDetails(key, event, setDetails) {
+  //     const value = event.target.value.trim();
+  //     setDetails(prev => ({ ...prev, [key]: value }));
+  //   }
 
-    // #
-    function resetDetails(detailFieldsArray, setDetails) {
-      const clearedDetails = {};
+  //   // #
+  //   function resetDetails(detailFieldsArray, setDetails) {
+  //     const clearedDetails = {};
 
-      for (const field of detailFieldsArray) {
-          clearedDetails[field] = "";
-      }
+  //     for (const field of detailFieldsArray) {
+  //         clearedDetails[field] = "";
+  //     }
 
-      setDetails(prev => ({ ...prev, ...clearedDetails }));
-    }
+  //     setDetails(prev => ({ ...prev, ...clearedDetails }));
+  //   }
 
     //#
     function isUsernameValid(username, setErrorMsg){
@@ -58,8 +57,8 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <LoginPage
-        handleUpdateDetails={handleUpdateDetails}
-        resetDetails={resetDetails}
+        // handleUpdateDetails={handleUpdateDetails}
+        // resetDetails={resetDetails}
         isUsernameValid={isUsernameValid}
         jwtKey={jwtKey}
       />
@@ -69,8 +68,8 @@ const router = createBrowserRouter([
     path: '/register',
     element: (
       <RegisterPage
-        handleUpdateDetails={handleUpdateDetails}
-        resetDetails={resetDetails}
+        // handleUpdateDetails={handleUpdateDetails}
+        // resetDetails={resetDetails}
         isUsernameValid={isUsernameValid}
         jwtKey={jwtKey}
       />

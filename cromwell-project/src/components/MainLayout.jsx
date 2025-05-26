@@ -15,7 +15,7 @@ function MainLayout({jwtKey}){
 
 
     useEffect(() => {
-        if(!parsedUserToken) {
+        if(!parsedUserToken || !userToken) {
             console.error("Error fetching data");
             navigate("/");
         }

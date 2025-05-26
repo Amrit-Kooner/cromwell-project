@@ -94,29 +94,27 @@ function isPasswordValid(password, confirmPassword, res) {
     const hasNumber = numberRegexPattern.test(password);
     const hasSpecialChar = specialCharRegexPattern.test(password);
 
-    let isValid = true;
-
     if(!password){
         sendResponse(res, 400, "No password");
-        isValid = false;
+        return false;
     }else if(!confirmPassword){
         sendResponse(res, 400, "No confirm password");
-        isValid = false;
+        return false;
     }  else if(password.length < MIN_PASSWORD_LEN) {
         sendResponse(res, 400, `Password too short, minimum length must be ${MIN_PASSWORD_LEN} NOT ${password.length}.`);
-        isValid = false;
+         return false;
     }else if (password !== confirmPassword) {
         sendResponse(res, 400, "Passwords do not match.");
-        isValid = false;
+         return false;
     }else if (!hasSpecialChar) {
         sendResponse(res, 400, "Password needs at least one special character.");
-        isValid = false;
+         return false;
     }else if (!hasNumber) {
         sendResponse(res, 400, "Password needs at least one number.");
-        isValid = false;
+         return false;
     }
 
-    return isValid;
+    return true;
 }
 
 function isEmailValid(email, res) {
@@ -124,13 +122,8 @@ function isEmailValid(email, res) {
 
     const isEmailValid = emailRegexPattern.test(email);
 
-    if(!email){
-        sendResponse(res, 400, "No email.");
-        return false;
-    }
-
-    if(!isEmailValid){
-        sendResponse(res, 400, "Email invalid");
+    if(!email || !isEmailValid){
+        sendResponse(res, 400, "Invalid email.");
         return false;
     }
 
@@ -207,7 +200,7 @@ async function loginCheckPasswordMatch(username, password, res){
 
 // used by /user/login endpoint
 async function loginUser(username, res){
-    const userIDresponse = await queryDatabase("SELECT id FROM users WHERE username = $1",[username]);
+    const userIDresponse = await queryDatabase("SELECT id FROM users WHERE username = $1", [username]);
 
     if(!userIDresponse){ 
         sendResponse(res, 500, "Database query failed");
@@ -220,23 +213,18 @@ async function loginUser(username, res){
     }
 
     const userId = userIDresponse.rows[0].id;
-    const accessToken = jwt.sign({ id: userId }, secretTokenKey, {expiresIn:"1hr"});
+    const accessToken = jwt.sign({ id: userId }, secretTokenKey, { expiresIn: "1h" });
 
-    sendResponse(res, 200, {username: username, token: accessToken});
+    sendResponse(res, 200, { username, token: accessToken });
 }
+
 
 // used by /user endpoint
 function decodeToken(req, res){
     const authHeader = req.headers.authorization;
-
-    if(!authHeader) {
-        sendResponse(res, 401, "Token missing.");
-        return;
-    }
-
     const token = authHeader && authHeader.split(' ')[1];
 
-    if(!token) {
+    if(!authHeader || !token) {
         sendResponse(res, 401, "Token missing.");
         return;
     }
@@ -244,11 +232,16 @@ function decodeToken(req, res){
     try{
         const decoded = jwt.verify(token, secretTokenKey);
 
+        if(!decoded){
+            sendResponse(res, 401, "Token verification failed.");
+            return false;
+        }
+
         return decoded;
     } catch(err){
         console.error(err)
         sendResponse(res, 401, "Token verification failed.");
-
+        return false
     }
 }
 
@@ -278,9 +271,9 @@ app.post("/user/register", async (req, res) => {
 
     const SALT_ROUNDS = 10;
 
-    if(!isUsernameValid(username, res)) return;
-    if(!isEmailValid(email, res)) return;
-    if(!isPasswordValid(password, confirmPassword, res)) return;
+    if(!isUsernameValid(username, res) 
+    || !isEmailValid(email, res) 
+    || !isPasswordValid(password, confirmPassword, res)) return;
 
     const isValid = await doesRegUsernameAndEmailExist(username, email, res);
     if(!isValid) return;
@@ -296,13 +289,11 @@ app.post("/user/register", async (req, res) => {
 app.post("/user/login", async (req, res) => {
     const {username, password} = req.body;
 
-    if(!isUsernameValid(username, res)) return;
-    if(!isPasswordValid(password, res)) return;
+    if(!isUsernameValid(username, res) || !isPasswordValid(password, res)) return;
 
     const doesUserNameExists = await loginCheckUsernameExists(username, res);
 
     if(!doesUserNameExists) return;
-
 
     const doesPasswordMatch = await loginCheckPasswordMatch(username, password, res);
 

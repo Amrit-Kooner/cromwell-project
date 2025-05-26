@@ -21,9 +21,10 @@ function ProfilePage({jwtKey}){
         const userToken = localStorage.getItem(jwtKey);
         const parsedUserToken = userToken ? JSON.parse(userToken) : null;
 
-        if(!userToken) {
+        if(!parsedUserToken || !userToken) {
             console.error("No token");
             navigate("/");
+            return;
         }
 
         async function fetchData() {
