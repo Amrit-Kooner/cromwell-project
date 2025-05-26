@@ -4,7 +4,7 @@ const dbConfig = require("./dbConfig");
 const pool1 = new Pool({ ...dbConfig, database: "postgres" });
 const pool2 = new Pool(dbConfig);
 
-async function createDatabse() {
+async function createDatabase() {
   const createDBquery = `CREATE DATABASE ${dbConfig.database};`
 
   const createTableQuery = `
@@ -32,6 +32,6 @@ async function createDatabse() {
   }
 }
 
-createDatabse();
+createDatabase();
 
 
