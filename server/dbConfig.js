@@ -1,9 +1,9 @@
 
 const config = {
   user: "postgres",
-  password: "root",     // Change to your actual password
-  host: "localhost",    // Change if your DB is remote
-  port: 5001,           // Change to your PostgreSQL port
+  password: "root",  
+  port: 5001,     
+  host: "localhost",          
   database: "cromwell_project",
 };
 

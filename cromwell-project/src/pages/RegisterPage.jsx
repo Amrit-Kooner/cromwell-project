@@ -1,15 +1,11 @@
 import axios from 'axios'
-import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import ButtonLink from '../components/ButtonLink'
-import { 
-  updateDetails, 
-  resetDetails, 
-  setErrorMsg,
-} from '../redux/authSlice'
+import { updateDetails, resetDetails, setErrorMsg } from '../redux/authSlice'
+
 
 function RegisterPage({ isUsernameValid, jwtKey }) {
   const navigate = useNavigate()

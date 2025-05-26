@@ -6,8 +6,8 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import ButtonLink from "../components/ButtonLink";
 import verifyTokenHook from "../hooks/VerifyTokenHook";
-
 import { resetDetails, setErrorMsg, updateDetails } from "../redux/slices/authUserSlice";
+
 
 function LoginPage({ isUsernameValid, jwtKey }) {
   const navigate = useNavigate();
