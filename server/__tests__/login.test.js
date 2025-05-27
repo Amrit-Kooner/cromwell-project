@@ -19,6 +19,7 @@ describe("login", () => {
     await supertest(app).post("/user/register").send(loggedUserData);
   });
 
+  
   it("successful login", async () => {
         const data = createLoginData(loggedUserData.username, loggedUserData.password);
         await testEndpoint(data, 200)
@@ -48,6 +49,7 @@ describe("login", () => {
     const data = createLoginData(loggedUserData.username, inputNotEntered);
     await testEndpoint(data, 400)
   });
+
 
   afterAll(async () => {
     await pool.query('DELETE FROM users WHERE username = $1', [loggedUserData.username]);

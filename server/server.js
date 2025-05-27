@@ -283,26 +283,6 @@ app.post("/user/register", async (req, res) => {
 });
 
 
-
-// #
-app.get("/user", async (req, res) => {
-    const decoded = decodeToken(req, res);
-    const userID = decoded.id;
-
-    await sendUserData(userID, res);
-});
-
-// --
-
-app.post("/verify", (req, res) => {
-    const decoded = decodeToken(req, res);
-
-    if (!decoded) return; 
-
-    sendResponse(res, 200, "Token is valid");
-});
-
-
 // ---------------------
 
 // #
@@ -322,6 +302,24 @@ app.post("/user/login", async (req, res) => {
 
     await loginUser(username, res);
 })
+
+// #
+app.get("/user", async (req, res) => {
+    const decoded = decodeToken(req, res);
+    const userID = decoded.id;
+
+    await sendUserData(userID, res);
+});
+
+// --
+
+app.post("/verify", (req, res) => {
+    const decoded = decodeToken(req, res);
+
+    if (!decoded) return; 
+
+    sendResponse(res, 200, "Token is valid");
+});
 
 // #
 const PORT_NUM = 5000;

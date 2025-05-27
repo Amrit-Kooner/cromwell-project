@@ -12,6 +12,7 @@ describe("user", () => {
     token = res.body.token;
   });
 
+  
   it("should reject invalid token", async () => {
     await supertest(app).get("/user").set("Authorization", "Bearer invalidtoken").expect(401);
   });
@@ -19,6 +20,7 @@ describe("user", () => {
   it("should return user data with valid token", async () => {
     await supertest(app).get("/user").set("Authorization", `Bearer ${token}`).expect(200);
   });
+
 
   afterAll(async () => {
     await pool.query("DELETE FROM users WHERE username = $1", [loggedUserData.username]);
