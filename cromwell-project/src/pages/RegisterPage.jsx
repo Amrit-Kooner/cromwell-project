@@ -109,68 +109,67 @@ function RegisterPage({ isUsernameValid, jwtKey }) {
     dispatch(updateSignupDetails({ key, value: event.target.value.trim() }))
   }
 
-return (
-  <section className="register-section">
-    <div className="btn-wrapper">
-      <BackButton destination={"/"} />
-    </div>
+  return (
+    <section className="register-section">
+      <div className="btn-wrapper">
+        <BackButton destination={"/"} />
+      </div>
 
-    <form className="register-form" onSubmit={validateRegisterDetails}>
-      <Input
-        className="register-input"
-        type="text"
-        placeholder="username..."
-        value={registerDetails.username}
-        maxLength={30}
-        onChange={(e) => handleChange("username", e)}
-      />
+      <form className="register-form" onSubmit={validateRegisterDetails}>
+        <Input
+          className="register-input"
+          type="text"
+          placeholder="username..."
+          value={registerDetails.username}
+          maxLength={30}
+          onChange={(e) => handleChange("username", e)}
+        />
 
-      <Input
-        className="register-input"
-        type="email"
-        placeholder="email..."
-        value={registerDetails.email}
-        maxLength={254}
-        onChange={(e) => handleChange("email", e)}
-      />
+        <Input
+          className="register-input"
+          type="email"
+          placeholder="email..."
+          value={registerDetails.email}
+          maxLength={254}
+          onChange={(e) => handleChange("email", e)}
+        />
 
-      <Input
-        className="register-input"
-        type="password"
-        placeholder="password..."
-        value={registerDetails.password}
-        onChange={(e) => handleChange("password", e)}
-      />
+        <Input
+          className="register-input"
+          type="password"
+          placeholder="password..."
+          value={registerDetails.password}
+          onChange={(e) => handleChange("password", e)}
+        />
 
-      <Input
-        className="register-input"
-        type="password"
-        placeholder="confirm password..."
-        value={registerDetails.confirmPassword}
-        onChange={(e) => handleChange("confirmPassword", e)}
-      />
+        <Input
+          className="register-input"
+          type="password"
+          placeholder="confirm password..."
+          value={registerDetails.confirmPassword}
+          onChange={(e) => handleChange("confirmPassword", e)}
+        />
 
-      <Button className="submit-btn" type="submit">
-        Register
-      </Button>
-    </form>
+        <Button className="submit-btn btn" type="submit">
+          Register
+        </Button>
+      </form>
 
-    <h3 className="switch-text">
-      Already have an account?{" "}
-      <ButtonLink
-        destination="/login"
-        onClick={() => {
-          dispatch(clearDetails("signupDetails"));
-          dispatch(setErrorMsg(""));
-        }}
-      >
-        Login
-      </ButtonLink>
-    </h3>
+      <h3 className="switch-text">
+        Already have an account?{" "}
+        <ButtonLink
+          destination="/login"
+          onClick={() => {
+            dispatch(clearDetails("signupDetails"));
+            dispatch(setErrorMsg(""));
+          }}>
+          Login
+        </ButtonLink>
+      </h3>
 
-    {errorMsg && <p className="error-msg">{errorMsg}</p>}
-  </section>
-);
+      {errorMsg && <p className="error-msg">{errorMsg}</p>}
+    </section>
+  );
 }
 
 export default RegisterPage;

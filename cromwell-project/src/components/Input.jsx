@@ -19,14 +19,14 @@ function Input({type, onChange, ...rest}){
         onChange={(event) => {
           onChange(event);
           handlePasswordLen(event);
-        }}
-      />
+        }}/>
+        
       {isTypePassword && passwordLen !== 0 && (
         <button
           type="button"
-          className="toggle-password-btn"
-          onClick={() => setTogglePasswordShow(!togglePasswordShow)}
-        >
+          className="toggle-password-btn btn"
+          title="Toggle"
+          onClick={() => setTogglePasswordShow(!togglePasswordShow)}>
           {togglePasswordShow ? "hide" : "show"}
         </button>
       )}

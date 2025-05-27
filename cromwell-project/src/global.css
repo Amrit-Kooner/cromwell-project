@@ -12,7 +12,6 @@
   --btn-radius: 1.2rem;
   --btn-padding: 1.2rem 2.4rem;
   --shadow-light: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.05);
-  --shadow-btn-hover: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.15);
 }
 
 *,
@@ -50,6 +49,8 @@ button {
   text-decoration: none;
 }
 
+/* ------------------- */
+
 .container {
   width: 80%;
   margin: 0 auto;
@@ -71,6 +72,9 @@ button {
   align-items: center;
   justify-content: center;
   user-select: none;
+  font-size: 1.6rem;
+  color: var(--grey-1);
+  background-color: var(--grey-4);
 }
 
 .header .btn-wrapper .btn, .back-btn{
@@ -89,15 +93,6 @@ button {
   padding-left: 2.5rem;
 }
 
-.main-btn {
-  background-color: var(--grey-4);
-  color: var(--grey-1);
-}
-
-.link-btn {
-  background-color: var(--black-1);
-  color: var(--grey-1);
-}
 
 .home-heading {
   font-size: 3.5rem;
@@ -131,15 +126,15 @@ button {
 }
 
 .auth-section{
-    padding: 0px;
+    padding: 0;
     justify-content: center;
 }
 
 .back-btn {
   align-self: flex-start;
   margin-bottom: 1rem;
-  color: var(--black-2);
-  background-color: var(--grey-3);
+  color: var(--grey-2);
+  background-color: var(--black-1);
   font-weight: 600;
   cursor: pointer;
   padding: 0.8rem 1.6rem;
@@ -155,7 +150,6 @@ button {
   gap: 1rem;
 }
 
-.auth-input,
 .login-input,
 .register-input {
   padding: 0.8rem 1rem;
@@ -165,7 +159,6 @@ button {
   font-size: 1.6rem;
 }
 
-.auth-input:focus,
 .login-input:focus,
 .register-input:focus {
   border-color: var(--black-1);
@@ -175,7 +168,6 @@ button {
   margin-top: 2.5rem;
   padding: 1rem;
   background-color: var(--black-1);
-  color: var(--grey-1);
   border-radius: 0.6rem;
   cursor: pointer;
   text-align: center;
@@ -183,12 +175,12 @@ button {
   font-size: 1.6rem;
 }
 
-.submit-btn:hover {
-  background-color: var(--black-2);
+.switch-text .btn{
+  margin-left: 2.5rem;
 }
 
-.switch-text .btn{
-  margin-left: 50px;
+.switch-text{
+  font-size: 1.6rem;
 }
 
 .auth-switch,
@@ -201,19 +193,6 @@ button {
   display: flex;
 }
 
-.auth-switch a,
-.login-switch a,
-.register-switch a {
-  color: var(--grey-4);
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.auth-switch a:hover,
-.login-switch a:hover,
-.register-switch a:hover {
-  color: var(--black-1);
-}
 
 .error-msg {
   color: var(--error);
@@ -240,10 +219,10 @@ button {
   font-size: 1.6rem;
 }
 
+
 .toggle-password-btn {
   background-color: var(--grey-4);
   border: 0.1rem solid var(--grey-4);
-  color: var(--grey-1);
   padding: 0.8rem 1.5rem;
   font-weight: 600;
   cursor: pointer;
@@ -252,13 +231,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 0;
-}
-
-.toggle-password-btn:hover {
-  background-color: var(--black-1);
-  border-color: var(--black-1);
-  box-shadow: var(--shadow-btn-hover);
+  margin-left: 1rem;
 }
 
 .auth-switch .btn {

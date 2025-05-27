@@ -29,7 +29,9 @@ function LoginPage({ isUsernameValid, jwtKey }) {
   async function validateLogin(event) {
     event.preventDefault();
 
-    if (!isUsernameValid(loginDetails.username, (msg) => dispatch(setErrorMsg(msg)))) {
+    dispatch(setErrorMsg(""))
+
+    if (!isUsernameValid(loginDetails.username, () => dispatch(setErrorMsg()))) {
       dispatch(resetDetails(["username"]));
       return -1;
     }
@@ -39,9 +41,10 @@ function LoginPage({ isUsernameValid, jwtKey }) {
       const status = response.status;
       const payloadData = response.data;
 
+
       if (status === 404) {
         dispatch(resetDetails(["username"]));
-        dispatch(setErrorMsg("User not found."));
+        dispatch(setErrorMsg("Username not found."));
         return -1;
       }
 
@@ -89,7 +92,7 @@ return (
           value={loginDetails.password}
         />
 
-        <Button className="submit-btn" type="submit">
+        <Button className="submit-btn btn" type="submit">
           Login
         </Button>
       </form>
@@ -101,8 +104,7 @@ return (
           onClick={() => {
             dispatch(clearDetails("loginDetails"));
             dispatch(setErrorMsg(""));
-          }}
-        >
+          }}>
           Register
         </ButtonLink>
       </h3>

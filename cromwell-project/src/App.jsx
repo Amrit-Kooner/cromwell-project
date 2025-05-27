@@ -13,29 +13,13 @@ import MainLayout from './components/MainLayout.jsx'
 function App({}) {
   const jwtKey = "jsonwebtoken";
 
-  // // #
-  //   function handleUpdateDetails(key, event, setDetails) {
-  //     const value = event.target.value.trim();
-  //     setDetails(prev => ({ ...prev, [key]: value }));
-  //   }
-
-  //   // #
-  //   function resetDetails(detailFieldsArray, setDetails) {
-  //     const clearedDetails = {};
-
-  //     for (const field of detailFieldsArray) {
-  //         clearedDetails[field] = "";
-  //     }
-
-  //     setDetails(prev => ({ ...prev, ...clearedDetails }));
-  //   }
-
     //#
     function isUsernameValid(username, setErrorMsg){
       const MIN_USERNAME_LEN = 3;
+      const trimmed = username.trim()
 
-      if(username.length <= MIN_USERNAME_LEN){
-        setErrorMsg(`Username too short, minimum length must be ${MIN_USERNAME_LEN} NOT ${username.length}.`);
+      if(trimmed.length <= MIN_USERNAME_LEN){
+        setErrorMsg(`Username too short, minimum length must be ${MIN_USERNAME_LEN} NOT ${trimmed.length}.`);
         return false;
       }
       
@@ -57,8 +41,6 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <LoginPage
-        // handleUpdateDetails={handleUpdateDetails}
-        // resetDetails={resetDetails}
         isUsernameValid={isUsernameValid}
         jwtKey={jwtKey}
       />
@@ -68,8 +50,6 @@ const router = createBrowserRouter([
     path: '/register',
     element: (
       <RegisterPage
-        // handleUpdateDetails={handleUpdateDetails}
-        // resetDetails={resetDetails}
         isUsernameValid={isUsernameValid}
         jwtKey={jwtKey}
       />

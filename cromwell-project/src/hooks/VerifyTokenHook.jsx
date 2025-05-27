@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+// TO DO: VERIFY TOKEN
 
 function verifyTokenHook(destination){
     //     useEffect(() => {

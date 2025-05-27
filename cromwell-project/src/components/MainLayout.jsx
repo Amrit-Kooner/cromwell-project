@@ -6,12 +6,10 @@ import Header from './Header';
 function MainLayout({jwtKey}){
     const navigate = useNavigate();
 
-
     function handleLogout(){
         localStorage.removeItem(jwtKey);
         navigate("/");
     }
-
     
     return (
         <main className='main'>

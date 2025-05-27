@@ -45,16 +45,15 @@ function ProfilePage({jwtKey}){
 
         return (
             <section className='profile-section'>
-      <div className='btn-wrapper'><BackButton destination={"/home"}/></div>
-
-                <div className='user-info-wrapper'>
-                    {/* shows id and password as well */}
-                    {Object.entries(user).map((data) => (
-                        <p key={data[0]} className={`${data[0]}-info`}>
-                            <span>{`${data[0]}:`}</span> {data[1] ?? ''}
-                        </p>
-                    ))}
-                </div>
+                 <div className='btn-wrapper'><BackButton destination={"/home"}/></div>
+                    <div className='user-info-wrapper'>
+                        {/* i made shows id and password as well, for testing */}
+                        {Object.entries(user).map((data) => (
+                            <p key={data[0]} className={`${data[0]}-info`}>
+                                <span>{`${data[0]}:`}</span> {data[1] ?? ''}
+                            </p>
+                        ))}
+                    </div>
             </section>
         )
 }
