@@ -303,14 +303,6 @@ app.post("/verify", (req, res) => {
 });
 
 
-// #
-const PORT_NUM = 5000;
-
-app.listen(PORT_NUM, () => {
-    console.log(`Server has started on port ${PORT_NUM}`)
-})
-
-
 // ---------------------
 
 // #
@@ -329,6 +321,13 @@ app.post("/user/login", async (req, res) => {
     
 
     await loginUser(username, res);
+})
+
+// #
+const PORT_NUM = 5000;
+
+app.listen(PORT_NUM, () => {
+    console.log(`Server has started on port ${PORT_NUM}`)
 })
 
 module.exports = app;

@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import ButtonLink from '../components/ButtonLink'
-import { updateDetails, resetDetails, setErrorMsg } from '../redux/authSlice'
-
+import { updateSignupDetails, resetDetails, clearDetails, setErrorMsg } from '../redux/slices/authUserSlice'
+import { useEffect } from 'react'
+import BackButton from "../components/BackButton";
 
 function RegisterPage({ isUsernameValid, jwtKey }) {
   const navigate = useNavigate()
@@ -13,6 +14,12 @@ function RegisterPage({ isUsernameValid, jwtKey }) {
 
   const registerDetails = useSelector(state => state.authUser.signupDetails)
   const errorMsg = useSelector(state => state.authUser.errorMsg)
+
+  useEffect(() => {
+    if (localStorage.getItem(jwtKey)) {
+      navigate("/home")
+    }
+  }, [])
 
   function isPasswordValid() {
     const { password, confirmPassword } = registerDetails
@@ -83,13 +90,13 @@ function RegisterPage({ isUsernameValid, jwtKey }) {
       const status = response.status
 
       if (status === 400) {
-        // handle user/email exists errors here if backend differentiates them
         dispatch(setErrorMsg('User or email already exists.'))
         return -1
       }
 
       if (status >= 200 && status < 300) {
-        dispatch(resetDetails(Object.keys(registerDetails))) // reset all signup fields
+        dispatch(resetDetails(["username", "email", "password", "confirmPassword"]))
+        dispatch(clearDetails("signupDetails"))
         dispatch(setErrorMsg(""))
         navigate('/login')
       }
@@ -98,54 +105,72 @@ function RegisterPage({ isUsernameValid, jwtKey }) {
     }
   }
 
-  return (
-    <>
-      <ButtonLink destination={'/'}>Back</ButtonLink>
+  function handleChange(key, event) {
+    dispatch(updateSignupDetails({ key, value: event.target.value.trim() }))
+  }
 
-      <form onSubmit={validateRegisterDetails}>
-        <Input
-          type='text'
-          placeholder='username...'
-          value={registerDetails.username}
-          maxLength={30}
-          onChange={(e) => dispatch(updateDetails({ field: 'username', value: e.target.value }))}
-        />
+return (
+  <section className="register-section">
+    <div className="btn-wrapper">
+      <BackButton destination={"/"} />
+    </div>
 
-        <Input
-          type='email'
-          placeholder='email...'
-          value={registerDetails.email}
-          maxLength={254}
-          onChange={(e) => dispatch(updateDetails({ field: 'email', value: e.target.value }))}
-        />
+    <form className="register-form" onSubmit={validateRegisterDetails}>
+      <Input
+        className="register-input"
+        type="text"
+        placeholder="username..."
+        value={registerDetails.username}
+        maxLength={30}
+        onChange={(e) => handleChange("username", e)}
+      />
 
-        <Input
-          type='password'
-          placeholder='password...'
-          value={registerDetails.password}
-          onChange={(e) => dispatch(updateDetails({ field: 'password', value: e.target.value }))}
-        />
+      <Input
+        className="register-input"
+        type="email"
+        placeholder="email..."
+        value={registerDetails.email}
+        maxLength={254}
+        onChange={(e) => handleChange("email", e)}
+      />
 
-        <Input
-          type='password'
-          placeholder='confirm password...'
-          value={registerDetails.confirmPassword}
-          onChange={(e) => dispatch(updateDetails({ field: 'confirmPassword', value: e.target.value }))}
-        />
+      <Input
+        className="register-input"
+        type="password"
+        placeholder="password..."
+        value={registerDetails.password}
+        onChange={(e) => handleChange("password", e)}
+      />
 
-        <Button type='submit'>Register</Button>
-      </form>
+      <Input
+        className="register-input"
+        type="password"
+        placeholder="confirm password..."
+        value={registerDetails.confirmPassword}
+        onChange={(e) => handleChange("confirmPassword", e)}
+      />
 
-      <h3>
-        Already have an account? <ButtonLink destination={'/login'}>Login</ButtonLink>
-      </h3>
+      <Button className="submit-btn" type="submit">
+        Register
+      </Button>
+    </form>
 
-      <h1>{registerDetails.email}</h1>
-      <h1>{registerDetails.password}</h1>
-      <h1>{registerDetails.confirmPassword}</h1>
-      <h1>{errorMsg}</h1>
-    </>
-  )
+    <h3 className="switch-text">
+      Already have an account?{" "}
+      <ButtonLink
+        destination="/login"
+        onClick={() => {
+          dispatch(clearDetails("signupDetails"));
+          dispatch(setErrorMsg(""));
+        }}
+      >
+        Login
+      </ButtonLink>
+    </h3>
+
+    {errorMsg && <p className="error-msg">{errorMsg}</p>}
+  </section>
+);
 }
 
-export default RegisterPage
+export default RegisterPage;

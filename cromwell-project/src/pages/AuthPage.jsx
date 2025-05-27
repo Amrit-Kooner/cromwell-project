@@ -8,18 +8,20 @@ function AuthPage({jwtKey}){
     
     
     //custom hook?
-    // useEffect(() => {
-    //     if (localStorage.getItem(jwtKey)) {
-    //         navigate("/home");
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (localStorage.getItem(jwtKey)) {
+            navigate("/home");
+        }
+    }, []);
 
 
     return (
-        <>
-            <ButtonLink destination={"/login"}>Login</ButtonLink>
-            <ButtonLink destination={"/register"}>Sign up</ButtonLink>
-        </>
+        <section className="auth-section">
+            <div className="btn-wrapper">
+                <ButtonLink destination={"/login"}>Login</ButtonLink>
+                <ButtonLink destination={"/register"}>Sign up</ButtonLink>
+            </div>
+        </section>
     )
 }
 

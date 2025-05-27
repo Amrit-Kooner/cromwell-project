@@ -1,10 +1,10 @@
 
 const config = {
-  user: "postgres",
-  password: "root",  
-  port: 5001,     
+  user: "postgres",   // ENTER YOURS
+  password: "root",  // ENTER YOURS
+  port: 5001,        // ENTER YOURS
   host: "localhost",          
-  database: "cromwell_project",
+  database: "cromwell_project", 
 };
 
 module.exports = config;

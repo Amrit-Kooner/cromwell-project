@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
-import ButtonLink from '../components/ButtonLink';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BackButton from '../components/BackButton';
 
 function ProfilePage({jwtKey}){
     const navigate = useNavigate();
 
     const [user, setUser] = useState({});
-    const {username, email} = user;
 
     
     useEffect(() => {
@@ -45,11 +44,18 @@ function ProfilePage({jwtKey}){
     },[])
 
         return (
-        <>
-            <ButtonLink destination={"/home"}>Back</ButtonLink>
-            <h1>{username ?? ''}</h1>
-            <h1>{email ?? ''}</h1>
-        </>
+            <section className='profile-section'>
+      <div className='btn-wrapper'><BackButton destination={"/home"}/></div>
+
+                <div className='user-info-wrapper'>
+                    {/* shows id and password as well */}
+                    {Object.entries(user).map((data) => (
+                        <p key={data[0]} className={`${data[0]}-info`}>
+                            <span>{`${data[0]}:`}</span> {data[1] ?? ''}
+                        </p>
+                    ))}
+                </div>
+            </section>
         )
 }
 

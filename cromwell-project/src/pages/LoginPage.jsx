@@ -6,7 +6,8 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import ButtonLink from "../components/ButtonLink";
 import verifyTokenHook from "../hooks/VerifyTokenHook";
-import { resetDetails, setErrorMsg, updateDetails } from "../redux/slices/authUserSlice";
+import { updateLoginDetails, resetDetails, clearDetails, setErrorMsg } from '../redux/slices/authUserSlice'
+import BackButton from "../components/BackButton";
 
 
 function LoginPage({ isUsernameValid, jwtKey }) {
@@ -15,6 +16,15 @@ function LoginPage({ isUsernameValid, jwtKey }) {
 
   const loginDetails = useSelector((state) => state.authUser.loginDetails);
   const errorMsg = useSelector((state) => state.authUser.errorMsg);
+
+
+    // custom hook?
+    useEffect(() => {
+        if (localStorage.getItem(jwtKey)) {
+            navigate("/home");
+        }
+    }, []);
+
 
   async function validateLogin(event) {
     event.preventDefault();
@@ -53,15 +63,17 @@ function LoginPage({ isUsernameValid, jwtKey }) {
   }
 
   function handleChange(key, event) {
-    dispatch(updateDetails({ key, value: event.target.value.trim() }));
+    dispatch(updateLoginDetails({ key, value: event.target.value.trim() }));
   }
 
-  return (
-    <>
-      <ButtonLink destination={"/"}>Back</ButtonLink>
+return (
+  <>
+    <section className="login-section">
+      <div className='btn-wrapper'><BackButton destination={"/"} /></div>
 
-      <form onSubmit={validateLogin}>
+      <form className="login-form" onSubmit={validateLogin}>
         <Input
+          className="login-input"
           type="text"
           placeholder="username..."
           maxLength={30}
@@ -70,23 +82,35 @@ function LoginPage({ isUsernameValid, jwtKey }) {
         />
 
         <Input
+          className="login-input"
           type="password"
           placeholder="password..."
           onChange={(e) => handleChange("password", e)}
           value={loginDetails.password}
         />
 
-        <Button type="submit">Login</Button>
+        <Button className="submit-btn" type="submit">
+          Login
+        </Button>
       </form>
 
-      {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
-
-      <h3>
-        Don't have an account? <ButtonLink destination={"/register"}>Register</ButtonLink>
+      <h3 className="switch-text">
+        Don't have an account?{" "}
+        <ButtonLink
+          destination={"/register"}
+          onClick={() => {
+            dispatch(clearDetails("loginDetails"));
+            dispatch(setErrorMsg(""));
+          }}
+        >
+          Register
+        </ButtonLink>
       </h3>
-    </>
-  );
+
+      {errorMsg && <p className="error-msg">{errorMsg}</p>}
+    </section>
+  </>
+);
 }
 
 export default LoginPage;
-

@@ -1,11 +1,25 @@
 const { Pool } = require("pg");
 const dbConfig = require("./dbConfig");
 
-const pool1 = new Pool({ ...dbConfig, database: "postgres" });
-const pool2 = new Pool(dbConfig);
-
-async function createDatabase() {
+// 
+async function createDB(){
+  const pool1 = new Pool({ ...dbConfig, database: "postgres" });
+  
   const createDBquery = `CREATE DATABASE ${dbConfig.database};`
+
+  try{
+    await pool1.query(createDBquery);
+    console.log("database created")
+  } catch(err){
+    console.log(err)
+  }
+
+  await pool1.end()
+}
+
+// 
+async function addTables(){
+  const pool2 = new Pool(dbConfig);
 
   const createTableQuery = `
     CREATE TABLE users (
@@ -16,22 +30,23 @@ async function createDatabase() {
     );
   `;
 
-  try{
-    await pool1.query(createDBquery);
-    console.log("database created")
-  } catch(err){
-    console.log(err)
-  }
-
-
-  try {
+    try {
     await pool2.query(createTableQuery);
     console.log("table created");
   } catch (err) {
     console.log(err);
   }
+
+  await pool2.end();
 }
 
-createDatabase();
+
+// 
+async function establishDB() {
+  await createDB();
+  await addTables();
+}
+
+establishDB();
 
 

@@ -6,32 +6,21 @@ import Header from './Header';
 function MainLayout({jwtKey}){
     const navigate = useNavigate();
 
-    const userToken = localStorage.getItem(jwtKey);
-    const parsedUserToken = userToken ? JSON.parse(userToken) : null;
-
-    // useEffect(() => {
-    //     localStorage.removeItem(jwtKey);
-    // }, [])
-
-
-    useEffect(() => {
-        if(!parsedUserToken || !userToken) {
-            console.error("Error fetching data");
-            navigate("/");
-        }
-    },[])
-
 
     function handleLogout(){
         localStorage.removeItem(jwtKey);
         navigate("/");
     }
 
+    
     return (
-        <>
+        <main className='main'>
             <Header handleLogout={handleLogout}/>
-            <Outlet/>
-        </>
+            
+            <div className='container'>
+                <Outlet/>
+            </div>
+        </main>
     )
 }
 

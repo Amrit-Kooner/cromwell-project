@@ -16,7 +16,9 @@ function HomePage({jwtKey}){
 
     return (
         <>
-            {parsedUserToken.username}
+            <section className='home-section'>
+                <h2 className='home-heading'>Welcome, {parsedUserToken.username}!</h2>
+            </section>
         </>
     )
 }
